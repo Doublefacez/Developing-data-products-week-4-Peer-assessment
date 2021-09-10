@@ -1,0 +1,101 @@
+---
+title: 'Week 4 Peer Assessmenr: Shiny Application and Reproducible Pitch'
+author: "Max"
+date: "10/09/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction 
+
+This is an assessment from the Coursera data science course (Developing data products) in week 4. This presentation will introduce you about my Shiny application deployed on Rstudio's sever.
+
+Here's the link to the shiny application: 
+<http://rmarkdown.rstudio.com>.
+
+This is the link to the Github repository of the ui & sever.R: 
+<www.sfasf.com>
+
+
+## Data info
+In this Shiny application, the mtcars data set was used.
+This application uses different variables to plot against the mpg (Miles per Gallon) variable, also draws a simple regression line of (hp ~ mpg).
+
+```{r head, cache=TRUE, echo=TRUE}
+head(mtcars)
+```
+## Ui.R code
+
+```{r ui, cache=TRUE, echo=TRUE, message=FALSE, results=FALSE}
+library(shiny)
+
+shinyUI(fluidPage(
+    titlePanel("Cars Dataset - Miles per Gallon"),
+  
+  sidebarPanel(selectInput("var", "Variable:", 
+                        c("Cylinders" = "cyl", "Transmission type" = "am",
+                          "Gears" = "gear")),
+            checkboxInput("model", "Show a simple regression model of hp vs mpg", 
+                          value = FALSE),
+                        submitButton("Sure! It seems cool")
+        ),
+  mainPanel(
+            h3(textOutput("title")),
+            plotOutput("plot1"),
+            plotOutput("plot2")
+  )
+))
+```
+
+
+## Sever.R code
+
+```{r sever, echo=TRUE}
+library(shiny)
+library(ggplot2)
+
+data <- mtcars
+data$am <- factor(data$am, labels = c("Auto", "Manual"))
+
+shinyServer(function(input, output) {
+    fig_title <- reactive({
+        paste("mpg vs ", input$var)
+    })
+    output$title <- renderText({
+        fig_title()
+    })
+    output$plot1 <- renderPlot({
+        if(input$var == "cyl"){
+            plot(mtcars$cyl, mtcars$mpg, main = "Plot of mpg vs cyl",
+                 xlab = "Cylinders", ylab = "Miles Per Gallon (mpg)")
+        }
+        if(input$var == "am"){
+        
+            boxplot(mtcars$mpg, mtcars$am, names = c("Auto", "Manual"),
+                    main = " Boxplot of mpg of each transmission type ")
+        }
+        if(input$var == "gear"){
+            plot(mtcars$gear, mtcars$mpg,
+                    main = " Plot of mpg of each gear", xlim = c(3, 5))
+        }
+
+    })
+    output$plot2 <- renderPlot({
+        if(input$model){
+            model1 <- lm(hp~mpg, data = mtcars)
+           
+                plot(mtcars$mpg, mtcars$hp, xlab = "Miles per Gallon",
+                     ylab = "Horsepower", bty = "n", pch = 16,
+                     xlim = c(10,35), ylim = c(50, 350))
+                abline(model1, col = "red", lwd = 2)
+        }
+        })
+})
+
+```
+
+
+
