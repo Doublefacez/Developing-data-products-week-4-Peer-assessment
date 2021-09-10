@@ -14,10 +14,10 @@ knitr::opts_chunk$set(echo = FALSE)
 This is an assessment from the Coursera data science course (Developing data products) in week 4. This presentation will introduce you about my Shiny application deployed on Rstudio's sever.
 
 Here's the link to the shiny application: 
-<http://rmarkdown.rstudio.com>.
+<https://doublefaces.shinyapps.io/Developing_data_products_week4_Shiny_App/>.
 
 This is the link to the Github repository of the ui & sever.R: 
-<www.sfasf.com>
+<https://github.com/Doublefacez/Developing-data-products-week-4-Peer-assessment>
 
 
 ## Data info
